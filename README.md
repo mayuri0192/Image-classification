@@ -7,4 +7,10 @@ Techniques Used:
 3)	K Means Clustering
 4)	SVM Classification
 
+Usage
+To run the main program run `python main.py`
+
+Dependencies
+Used with OpenCV 3 and Python 3.5. Python libraries required are scipy, numpy and matplotlib.
+
 
