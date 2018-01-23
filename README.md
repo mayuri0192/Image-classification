@@ -1,4 +1,10 @@
-"# quiz2-mayuri0192" 
-"# homework2-mayuri0192" 
-"# finalexam-mayuri0192" 
-"# ML-Algoritms" 
+Image Classification performed on Caltech 256 dataset: http://www.vision.caltech.edu/Image_Datasets/Caltech256/ 
+30607 Images
+
+Techniques Used:
+1)	Scale-invariant feature transform (SIFT)
+2)	Bag of Visual words
+3)	K Means Clustering
+4)	SVM Classification
+
+
