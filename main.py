@@ -1,4 +1,5 @@
 import cv2
+import joblib
 import numpy as np
 import time
 import os
@@ -28,9 +29,9 @@ def main(is_interactive=True, k=64, des_option=constants.ORB_FEAT_OPTION, svm_ke
         os.makedirs(constants.FILES_DIR_NAME)
 
     if is_interactive:
-        des_option = input("Enter [1] for using ORB features or [2] to use SIFT features.\n")
+        des_option = int(input("Enter [1] for using ORB features or [2] to use SIFT features.\n"))
         k = input("Enter the number of cluster centers you want for the codebook.\n")
-        svm_option = input("Enter [1] for using SVM kernel Linear or [2] to use RBF.\n")
+        svm_option = int(input("Enter [1] for using SVM kernel Linear or [2] to use RBF.\n"))
         svm_kernel = cv2.ml.SVM_LINEAR if svm_option == 1 else cv2.ml.SVM_RBF
 
     des_name = constants.ORB_FEAT_NAME if des_option == constants.ORB_FEAT_OPTION else constants.SIFT_FEAT_NAME
@@ -50,8 +51,10 @@ def main(is_interactive=True, k=64, des_option=constants.ORB_FEAT_OPTION, svm_ke
     # Train and test the dataset
     classifier = Classifier(dataset, log)
     svm, cluster_model = classifier.train(svm_kernel, k, des_name, des_option=des_option, is_interactive=is_interactive)
+    svm.save("svm_result.dat")
+    joblib.dump(cluster_model, 'cluster_model.plk')
     print("Training ready. Now beginning with testing")
-    result, labels = classifier.test( svm,cluster_model, k, des_option=des_option, is_interactive=is_interactive)
+    result, labels = classifier.test(svm, cluster_model, k, des_option=des_option, is_interactive=is_interactive)
     print('test result')
     print(result,labels)
     # Store the results from the test
