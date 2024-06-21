@@ -47,11 +47,16 @@ class Classifier:
         x_filename = filenames.vlads_train(k, des_name)
         print("Getting global descriptors for the training set.")
         start = time.time()
-        x, y, cluster_model = self.get_data_and_labels(self.dataset.get_train_set(),None, k, des_name ,isTrain,des_option,isTrain)
+        x, y, cluster_model = self.get_data_and_labels(self.dataset.get_train_set(),None, k, des_name ,des_option,isTrain)
         utils.save(x_filename, x)
         end = time.time()
         svm_filename = filenames.svm(k, des_name, svm_kernel)
         print("Calculating the Support Vector Machine for the training set...")
+        svm = cv2.ml.SVM_create()
+        svm.setType(cv2.ml.SVM_C_SVC)
+        svm.setKernel(svm_kernel)
+        svm.setTermCriteria((cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-6))
+        svm.train(x, cv2.ml.ROW_SAMPLE, y)
         return svm, cluster_model
 
     def test(self, svm, cluster_model, k, des_option = constants.ORB_FEAT_OPTION, is_interactive=True):
@@ -75,7 +80,7 @@ class Classifier:
         x, y, cluster_model= self.get_data_and_labels(self.dataset.get_test_set(), cluster_model, k, des_name,isTrain,des_option)
         end = time.time()
         start = time.time()
-        result = svm.predict(x)
+        _, result = svm.predict(x)
         end = time.time()
         self.log.predict_time(end - start)
         mask = result == y
@@ -117,6 +122,6 @@ class Classifier:
         else:
             X = descriptors.img_to_vect(des,cluster_model)
         print('X',X.shape,X)
-        y = np.float32(y)[:,np.newaxis]
-        x = np.matrix(X)
+        y = np.int32(y)[:,np.newaxis]
+        x = np.matrix(X, dtype=np.float32)
         return x, y, cluster_model

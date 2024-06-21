@@ -173,8 +173,8 @@ def img_to_vect(img_descs, cluster_model):
     """
 
     
-    clustered_desc = [cluster_model.predict(raw_words) for raw_words in img_descs]
-    img_bow_hist = np.array(np.bincount(clustered_desc, minlength=cluster_model.n_clusters))
+    clustered_descs = [cluster_model.predict(raw_words) for raw_words in img_descs]
+    img_bow_hist = np.array([np.bincount(clustered_desc, minlength=cluster_model.n_clusters) for clustered_desc in clustered_descs ])
     return img_bow_hist
 
 
